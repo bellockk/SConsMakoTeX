@@ -1,0 +1,2 @@
+# SConsMakoTeX
+Python + LaTeX = Goodness
