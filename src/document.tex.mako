@@ -1,33 +1,30 @@
-<%!
-    import os
-    import numpy
-    import matplotlib
-    matplotlib.use('Agg')  # Turn off plotting window
-    import matplotlib.pyplot as plt
-
-    variant_dir = 'build'
-
-    def myhist(filename, x, bins):
-        rand_numbers = numpy.random.randn(x)
-        plt.clf()
-        plt.hist(rand_numbers, bins)
-        plt.savefig(os.path.join(variant_dir, filename))
-        return filename
-%>
+<%def name="table(t)">
+\begin{tabular}{*{${len(t[0])}}{l}}
+<%
+   headers = [r'\textbf{%s}' % h for h in t[0]]
+   header = ' & '.join(headers) + r'\\ \hline'
+%> 
+${header}
+\hline
+  % for row in t[1:]:
+${' & '.join([str(c) for c in row]) + r'\\'}
+  % endfor
+\end{tabular}
+</%def>
 \documentclass[letter, article]{article}
 \usepackage{graphicx}
-\usepackage[left=2cm,top=2cm,right=2cm,bottom=2cm]{geometry}
+\usepackage[left=2cm,top=1.5cm,right=2cm,bottom=1.5cm]{geometry}
 
 \begin{document}
 
 \section{Mako Is Cool}
 
+${table([['Title A', 'Title B', 'Title C'],
+         ['Row X',   1,         2],
+         ['Row Y',   3,         4]])}
+
 \section{Plots}
 
-% for i in [2000, 20000]:
-    \subsection{${i} Random Numbers}
-    \includegraphics[width=5in]{${myhist('plot{0}.pdf'.format(i), i, 200)}}
-
-% endfor
+\input{plots}
 
 \end{document}

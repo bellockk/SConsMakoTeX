@@ -42,6 +42,8 @@ variant_dir = 'build'
 VariantDir(variant_dir,['src'],duplicate=0)
 
 # Render the mako templates
+local_env.Mako(os.path.join(variant_dir, 'plots.tex'),
+               os.path.join(variant_dir, 'plots.tex.mako'))
 template = local_env.Mako(os.path.join(variant_dir, 'document.tex'),
                           os.path.join(variant_dir, 'document.tex.mako'))
 
