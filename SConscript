@@ -42,13 +42,14 @@ variant_dir = 'build'
 VariantDir(variant_dir,['src'],duplicate=0)
 
 # Render the mako templates
-local_env.Mako(os.path.join(variant_dir, 'plots.tex'),
-               os.path.join(variant_dir, 'plots.tex.mako'))
-template = local_env.Mako(os.path.join(variant_dir, 'document.tex'),
-                          os.path.join(variant_dir, 'document.tex.mako'))
+for root, dirs, filenames in os.walk('src'):
+    for filename in filenames:
+        if filename.lower().endswith('.mako'):
+            local_env.Mako(os.path.join(variant_dir, os.path.relpath(root, 'src'), filename[:-5]),
+                           os.path.join(variant_dir, os.path.relpath(root, 'src'), filename))
 
 # Build the LaTeX
-doc = local_env.PDF(template)
+doc = local_env.PDF(File(os.path.join(variant_dir, 'document.tex')))
 
 # Install
 inst = env.Install('dist',doc)
