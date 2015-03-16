@@ -9,8 +9,10 @@ Combine python and LaTeX in an intuitive way, while not having to re-run the pyt
 Why Scons/Mako/LaTeX?
 
 LaTeX:  Nothing makes a document as beautiful as LaTeX, and its source files are easily merged in version control systems.
+
 Mako: Plugs Python into the LaTeX source code.
-SCons:  The glue that pulls the python and LaTeX together in a way that if utilizized properly does not re-run any python code unless it has changed.
+
+SCons:  The glue that pulls the python and LaTeX together in a way that if utilized properly does not re-run any python code unless it has changed.
 
 Use Cases:
 
