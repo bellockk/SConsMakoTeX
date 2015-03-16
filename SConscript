@@ -39,7 +39,7 @@ generate(local_env)
 
 # Create a Variant Directory
 variant_dir = 'build'
-VariantDir(variant_dir,['src'],duplicate=0)
+VariantDir(variant_dir,['src'],duplicate=1)
 
 # Render the mako templates
 for root, dirs, filenames in os.walk('src'):

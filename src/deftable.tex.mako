@@ -11,20 +11,7 @@ ${' & '.join([str(c) for c in row]) + r'\\'}
   % endfor
 \end{tabular}
 </%def>
-\documentclass[letter, article]{article}
-\usepackage{graphicx}
-\usepackage[left=2cm,top=1.5cm,right=2cm,bottom=1.5cm]{geometry}
-
-\begin{document}
-
-\section{Mako Is Cool}
 
 ${table([['Title A', 'Title B', 'Title C'],
          ['Row X',   1,         2],
          ['Row Y',   3,         4]])}
-
-\section{Plots}
-
-\input{plots}
-
-\end{document}

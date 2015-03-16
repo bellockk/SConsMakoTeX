@@ -5,14 +5,16 @@
     matplotlib.use('Agg')  # Turn off plotting window
     import matplotlib.pyplot as plt
 
-    variant_dir = 'build'
+    plot_path = 'plot'
+    if not os.path.isdir(plot_path):
+        os.makedirs(plot_path)
 
     def myhist(filename, x, bins):
         rand_numbers = numpy.random.randn(x)
         plt.clf()
         plt.hist(rand_numbers, bins)
-        plt.savefig(os.path.join(variant_dir, filename))
-        return filename
+        plt.savefig(os.path.join(plot_path, filename))
+        return os.path.join('..', plot_path, filename)
 %>
 % for i in [2000, 20000]:
 \subsection{${i} Random Numbers}
