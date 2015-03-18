@@ -17,8 +17,3 @@ SCons:  The glue that pulls the python and LaTeX together in a way that if utili
 Use Cases:
 
 Integrating python code into LaTeX code, without making document build times unwieldy.
-
-
-
-Notes:
-The current implementation is a proof of concept that integrates SCons, Mako, and LaTeX.  It does not yet demonstrate how to take advantage of SCons to compartmentalize the python bits and have them only be built if those bits have changed.
