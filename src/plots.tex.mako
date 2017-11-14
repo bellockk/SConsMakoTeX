@@ -5,7 +5,7 @@
     matplotlib.use('Agg')  # Turn off plotting window
     import matplotlib.pyplot as plt
 
-    plot_path = 'plot'
+    plot_path = 'mako'
     if not os.path.isdir(plot_path):
         os.makedirs(plot_path)
 

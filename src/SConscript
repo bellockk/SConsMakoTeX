@@ -3,7 +3,7 @@ import SCons
 
 # Define the Mako Builder
 def _string(target, source, env):
-    return 'Mako(%s, %s)' % (target[0], source[0])
+    return 'mako-render %s %s > %s' % ('flags', source[0], target[0])
 
 def _action(target, source, env):
 
@@ -33,6 +33,9 @@ def generate(env):
     scons_action=SCons.Action.Action(_action, _string)
     env['BUILDERS']['Mako'] =  Builder(action=scons_action,
                                        target_factory=env.fs.File)
+    #env.SetDefault(
+    #    MAKO_VARIABLES=SCons.Util.CLVar()
+
     env.AppendUnique(MAKO_DICTIONARY={})
 
 def exists(env):
@@ -49,24 +52,19 @@ Import('env')
 
 # Create a local build environment
 local_env = env.Clone()
+root = os.path.dirname(Dir('.').srcnode().abspath)
+local_env.Append(TEXINPUTS=[os.path.join(root, 'mako')])
 
 # Add the mako builder to the local environment
 generate(local_env)
 
-# Create a Variant Directory
-variant_dir = 'build'
-VariantDir(variant_dir,['src'],duplicate=1)
-
 # Render the mako templates
-for root, dirs, filenames in os.walk('src'):
-    for filename in filenames:
-        if filename.lower().endswith('.mako'):
-            local_env.Mako(os.path.join(variant_dir, os.path.relpath(root, 'src'), filename[:-5]),
-                           os.path.join(variant_dir, os.path.relpath(root, 'src'), filename))
+local_env.Mako('deftable.tex', 'deftable.tex.mako')
+local_env.Mako('plots.tex', 'plots.tex.mako')
 
 # Build the LaTeX
-doc = local_env.PDF(File(os.path.join(variant_dir, 'document.tex')))
+doc = local_env.PDF('document.tex')
 
 # Install
-inst = env.Install('dist',doc)
-env.NoClean(inst)
+install = local_env.InstallAs('SConsMakoTexExample.pdf',doc)
+Return('install')

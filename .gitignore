@@ -3,6 +3,7 @@
 *.pyc
 *~
 *.swp
-\build
-\dist
-\plot
+/build
+/dist
+/plot
+/mako
