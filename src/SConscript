@@ -1,85 +1,19 @@
 import os
-import SCons
 
-# Define the Mako Builder
-def _string(target, source, env):
-    return 'mako-render %s %s > %s' % (' '.join(['-var %s=%s' % (
-        key, value) for key, value in env['MAKO_DICTIONARY'].iteritems(
-            )]), source[0], target[0])
-
-def _action(target, source, env):
-
-    from mako.template import Template
-    from mako import exceptions
-
-    try:
-        template_object = Template(filename=source[0].abspath)
-    except:
-        print exceptions.text_error_template().render()
-        raise SCons.Errors.StopError(
-            SCons.Warnings.Warning, (
-                "Because of the above error, could not load the mako template "
-                "%s. Because of the previous error.") % source[0].abspath)
-
-    try:
-        rendered = template_object.render(**env['MAKO_DICTIONARY'])
-    except:
-        print exceptions.text_error_template().render()
-        raise SCons.Errors.StopError(
-            SCons.Warnings.Warning, (
-                "Because of the above error, could not render the template %s "
-                "with the following dictionary.\n%s") % (
-                    source[0].abspath, env['MAKO_DICTIONARY']))
-
-    try:
-        file_object = open(target[0].abspath, 'w')
-        file_object.write(rendered)
-        file_object.close()
-    except:
-        raise SCons.Errors.StopError(
-            SCons.Warnings.Warning,
-            "Could not write the rendered template to %s." % target[0].abspath)
-
-def generate(env):
-    scons_action=SCons.Action.Action(_action, _string)
-    env['BUILDERS']['Mako'] =  Builder(action=scons_action,
-                                       target_factory=env.fs.File)
-    env.AppendUnique(MAKO_DICTIONARY={})
-
-    # env.SetDefault(
-    #     MAKO_FLAGS=SCons.Util.CLVar()
-
-
-def exists(env):
-    try:
-        from mako.template import Template
-    except ImportError:
-        raise SCons.Errors.StopError(
-            SCons.Warnings.Warning, (
-                "Could not find mako, please ensure you have it installed on "
-                "your system."))
-    else:
-        return True
-
-
-# Import the default build environment
+# Setup local build environment and paths
 Import('env')
-
-# Create a local build environment
 local_env = env.Clone()
 root = os.path.dirname(Dir('.').srcnode().abspath)
-local_env.Append(TEXINPUTS=[os.path.join(root, 'mako')])
+media_path = os.path.join(root, 'media')
+common_path = os.path.join(root, 'common')
 
-# Add the mako builder to the local environment
-generate(local_env)
+# Build Requirements tex file
+local_env.Mako('document.tex', 'document.tex.mako')
 
-# Render the mako templates
-local_env.Mako('deftable.tex', 'deftable.tex.mako')
-local_env.Mako('plots.tex', 'plots.tex.mako')
-
-# Build the LaTeX
-doc = local_env.PDF('document.tex')
-
-# Install
-install = local_env.InstallAs('SConsMakoTexExample.pdf',doc)
+# Build Document
+local_env.PrependENVPath('PATH', common_path)
+local_env.Append(TEXINPUTS=[common_path, media_path])
+pdf = local_env.PDF('document.tex')
+install = local_env.InstallAs(
+    'SConsMakoTex.pdf', pdf)
 Return('install')
